@@ -31,7 +31,7 @@
                         echo form_input(array('type'=>'email','name'=>'txtIdentifiant','value'=>$unClient["EMAIL"],'title'=>'Email seulement','class'=>'form-control','maxlength'=>'30')).' <BR>';
 
                         echo form_label('Mot de passe ','lblMotDePasse');
-                        echo form_password(array('name'=>'txtMotDePasse','type'=>'pwd','value'=>$unClient["MOTDEPASSE"],'title'=>'Nombres ou lettres seulement','class'=>'form-control','maxlength'=>'30','placeholder'=>'Entrez un mot de passe')).'<BR>';
+                        echo form_input(array('name'=>'txtMotDePasse','type'=>'pwd','value'=>$unClient["MOTDEPASSE"],'title'=>'Nombres ou lettres seulement','class'=>'form-control','maxlength'=>'30','placeholder'=>'Entrez un mot de passe')).'<BR>';
 
                         echo form_label('Profil ','lblProfil');
                         echo form_input(array('name'=>'txtProfil','type'=>'text','value'=>$unClient["PROFIL"],'title'=>'Nombres ou lettres seulement','class'=>'form-control','maxlength'=>'14','placeholder'=>'(client/administrateur)')).'<BR>';

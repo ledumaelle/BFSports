@@ -35,7 +35,9 @@
                             <td>' .$unClient['EMAIL'].'</td>
                             <td>' .$unClient['MOTDEPASSE'].'</td>
                             <td>' .$unClient['PROFIL'].'</td>
-                             <td>'.anchor('administrateur/modifierUnClient/'.$unClient['NOCLIENT'], 'Modifier un client').'</td>                      </tr>';
+                             <td>'.anchor('administrateur/modifierUnClient/'.$unClient['NOCLIENT'], 'Modifier un client').' <br/>' 
+                             .anchor('administrateur/supprimerUnClient/'.$unClient['NOCLIENT'], 'Supprimer un client').'</td>
+                        </tr>';
                     // ; ferme le echo
                     endforeach ?>   
                 </tbody>

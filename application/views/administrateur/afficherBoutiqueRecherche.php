@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> Boutique </title>
+        <title> Recherche </title>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
     </head>
@@ -25,8 +25,7 @@
                                     <th>Modifications</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php foreach ($lesProduits as $unProduit) :
+                            <tbody><?php foreach ($lesProduits as $unProduit) :
                                 $unProduit = json_decode(json_encode($unProduit), True);
                                 if ($unProduit["DISPONIBLE"]=="1") : $disponiblite= "En Stock"; else : $disponiblite ="Non disponible"; endif;
                                 echo '<tr>  
@@ -48,6 +47,7 @@
             </div>
         </div>
             <p>Pour avoir afficher le détail d'un Produit, cliquer sur son titre</p> 
-            <p><?php echo $liensPagination; ?></p>
     </body>
 </html>
+
+

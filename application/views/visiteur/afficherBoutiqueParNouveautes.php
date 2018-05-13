@@ -31,7 +31,7 @@
                     
                 </div>
                 <div class="col-sm-6">
-                    <img src=" <?php echo img_url('boutique.jpg') ?>" width="100%" height="35%"/>
+                    <img src=" <?php echo img_url('nouveautes.jpg') ?>" width="100%" height="35%"/>
                 </div>
                 <div class="col-sm-3">
                     
@@ -58,15 +58,15 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($lesProduits as $unProduit):
-                                $unProduit = json_decode(json_encode($unProduit), True);
+                                    if ($unProduit["DISPONIBLE"]=="1") : $disponiblite= "En Stock"; else : $disponiblite ="Non disponible"; endif;
                                     echo  '<tr>  
-                                        <td class="col-sm-2"> <img  width="50%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
-                                        <td class="col-sm-2">' .$unProduit['LIBELLE'].'</td>
-                                        <td class="col-sm-1">' .(($unProduit['PRIXHT'])*(1+ ($unProduit['TAUXTVA']/100))).'€</td>
-                                        <td class="col-sm-1">' .$unProduit['NOMMARQUE'].'</td>
-                                        <td class="col-sm-1">' .$unProduit['LIBELLECATEGORIE'].'</td>
+                                    <td class="col-sm-2"> <img  width="50%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
+                                    <td class="col-sm-2">' .$unProduit['LIBELLE'].'</td>
+                                    <td class="col-sm-1">' .(($unProduit['PRIXHT'])*(1+ ($unProduit['TAUXTVA']/100))).'€</td>
+                                    <td class="col-sm-1">' .$unProduit['NOMMARQUE'].'</td>
+                                    <td class="col-sm-1">' .$unProduit['LIBELLECATEGORIE'].'</td>
                                     </tr>';
-                                endforeach ?>   
+                                endforeach ?>  
                             </tbody>
                         </table>
                     </div>
@@ -77,11 +77,5 @@
             </div>
         </div>
             <p>Pour avoir afficher le détail d'un produit, cliquer sur son titre</p> 
-            <p><?php echo $liensPagination; ?></p>
     </body>
 </html>
-
-
-
-
-

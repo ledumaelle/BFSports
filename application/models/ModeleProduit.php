@@ -7,54 +7,150 @@ class ModeleProduit extends CI_Model
         /* chargement database.php (dans config), obligatoirement dans le constructeur */
     }
 
-    public function existe($pProduit) // non utilisée retour 1 si connecté, 0 sinon
-    {
-       $this->db->where($pProduit);
-       $this->db->from('PRODUIT');
-       return $this->db->count_all_results(); // nombre de ligne retournées par la requeête
-    } // existe
-
-    public function retournerProduit($pProduit)
-    {
-       $requete = $this->db->get_where('PRODUIT',$pProduit);
-       return $requete->row(); // retour d'une seule ligne !
-       // retour sous forme d'objets
-    } // retournerClient
-
-    public function retournerProduits($pNoProduit = FALSE)
-    {
-        if ($pNoProduit === FALSE) // pas de n° d'Produit en paramètre
-        {  // on retourne tous les Produits
-             $requete = $this->db->get('PRODUIT');
-             return $requete->result_array(); // retour d'un tableau associatif
-        }
-        // ici on va chercher l'Produit dont l'id est $pNoProduit
-        $requete = $this->db->get_where('PRODUIT', array('NOPRODUIT' => $pNoProduit));
+    public function retournerProduits($pNoProduit = FALSE) //VISITEUR
+    {   $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.NOPRODUIT', $pNoProduit); 
+        $this->db->where('PRODUIT.DISPONIBLE', 1); 
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0); 
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
         return $requete->row_array(); // retour d'un tableau associatif
+    }
+    
+    public function retournerProduitsAdmin($pNoProduit = FALSE)  //ADMINISTRATEUR
+    {
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.NOPRODUIT', $pNoProduit);                                    
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+        return $requete->row_array();
+    }
+    
+    public function retournerProduitsRecherche($pRecherche=FALSE) //pb de cast 
+    {
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->like('LIBELLE', $pRecherche);
+        $this->db->where('PRODUIT.DISPONIBLE', 1);   
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+        return $requete->result_array(); // retour d'un tableau associatif
     } // fin retournerProduits
 
-    /* public function retournerMarque($pNoMarque = FALSE)
+    public function retournerProduitsRechercheAdmin($pRecherche=FALSE) //pb de cast 
     {
-        if ($pNoMarque === FALSE) // pas de n° d'Produit en paramètre
-        {  // on retourne tous les Produits
-             $requete = $this->db->get('marque');
-             return $requete->result_array(); // retour d'un tableau associatif
-        }
-        // ici on va chercher l'Produit dont l'id est $pNoProduit
-        $requete = $this->db->get_where('marque', array('NOMARQUE' => $pNoMarque));
-        return $requete->row_array(); // retour d'un tableau associatif
-    } // fin retournerProduits 
-    */
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->like('LIBELLE', $pRecherche);
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+        return $requete->result_array(); // retour d'un tableau associatif
+    } // fin retournerProduits
 
+    public function retournerProduitsCategorie($pNoCategorie=FALSE)
+    {
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('CATEGORIE.NOCATEGORIE', $pNoCategorie);
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+        return $requete->result_array(); // retour d'un tableau associatif
+    } // fin retournerProduits
+
+
+    public function retournerProduitsNouveautes()
+    {
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);
+        $this->db->order_by('NOPRODUIT', 'DESC');
+        $this->db->limit(3);
+        $requete = $this->db->get();
+        return $requete->result_array(); // retour d'un tableau associatif
+    } // fin retournerProduits
+
+    public function retournerProduitsLimite($nombreDeLignesARetourner, $noPremiereLigneARetourner)
+	{// Nota Bene : surcharge non supportée par PHP
+        $this->db->limit($nombreDeLignesARetourner, $noPremiereLigneARetourner);
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+		if ($requete->num_rows() > 0) { // si nombre de lignes > 0
+			foreach ($requete->result() as $ligne) {
+				$jeuDEnregsitrements[] = $ligne;
+			}
+			return $jeuDEnregsitrements;
+		} // fin if
+		return false;
+    } // retournerArticlesLimite
+
+    public function retournerProduitsLimiteAdmin($nombreDeLignesARetourner, $noPremiereLigneARetourner)
+	{// Nota Bene : surcharge non supportée par PHP
+        $this->db->limit($nombreDeLignesARetourner, $noPremiereLigneARetourner);
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+		if ($requete->num_rows() > 0) { // si nombre de lignes > 0
+			foreach ($requete->result() as $ligne) {
+				$jeuDEnregsitrements[] = $ligne;
+			}
+			return $jeuDEnregsitrements;
+		} // fin if
+		return false;
+    } // retournerArticlesLimite
+
+    public function nombreDeProduitsAdmin() 
+	{ // méthode utilisée pour la pagination	
+		return $this->db->count_all("PRODUIT");
+    } // nombreDArticles
+
+    public function nombreDeProduits() 
+    { // méthode utilisée pour la pagination
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);	
+		return $this->db->count_all("PRODUIT");
+    } // nombreDArticles
+    
     public function insererUnProduit($pDonnesAInserer)
     {
         return $this->db->insert('PRODUIT',$pDonnesAInserer);
     } // insérer un produit
     
-    public function modifierUnProduit($pDonnesAModifier,$pId)
+    public function modifierUnProduit($pDonnesAModifier=FALSE,$pNoProduit=FALSE,$pQuantiteEnStock=FALSE)
     {
-        return $this->db->update('PRODUIT',$pDonnesAModifier,'NOPRODUIT='.$pId);
+        $this->db->set('QUANTITEENSTOCK', $pQuantiteEnStock-$pDonnesAModifier);
+        $this->db->where('PRODUIT.NOPRODUIT',$pNoProduit);
+        return $this->db->update('PRODUIT');
     } // modifier un produit
+
+    public function modifierUnProduitSuppPanier($pQuantite=FALSE,$pNoProduit=FALSE,$pQuantiteEnStock=FALSE)
+    {
+        $this->db->set('QUANTITEENSTOCK', $pQuantiteEnStock+$pQuantite);
+        $this->db->where('PRODUIT.NOPRODUIT',$pNoProduit);
+        return $this->db->update('PRODUIT');
+    } // modifier un produit
+
     
 
 } // Fin Classe

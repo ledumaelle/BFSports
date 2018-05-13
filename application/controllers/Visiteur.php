@@ -8,67 +8,142 @@ class Visiteur extends CI_Controller
     $this->load->helper('assets'); // helper 'assets' ajouté a Application
     $this->load->model('ModeleProduit');
     $this->load->model('ModeleClient');
+    $this->load->model('ModeleMarque');
+    $this->load->model('ModeleCategorie');
+    $this->load->model('ModeleCommande');
+    $this->load->model('ModeleLigne');
+    $this->load->library('pagination');
     $this->load->library('session');
-        if ($this->session->statut=='administrateur') // client : statut client
-        {
-            $this->load->helper('url'); // pour utiliser redirect
-            redirect('/administrateur/afficherAccueil'); // pas les droits : redirection vers connexion
-        }
-    
-  } // __construct
+    if ($this->session->statut=='administrateur') // client : statut client
+    {
+      $this->load->helper('url'); // pour utiliser redirect
+      redirect('/administrateur/afficherAccueil'); // pas les droits : redirection vers connexion
+    }
+   } // __construct
 
   public function afficherAccueil() // afficher l'accueil
 	{
-		$this->load->view('templates/header');
-    $this->load->view('visiteur/afficherAccueil');
+    $this->load->view('templates/header');
+    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsNouveautes();
+    $this->load->view('visiteur/afficherAccueil',$DonneesInjectees);
     $this->load->view('templates/footer');
     
-  } // afficher l'acceuil
+  } // afficher l'accueil
 
-  public function afficherBoutique() // afficher l'accueil
+  public function afficherInfosSite() // afficher l'accueil
 	{
-    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduits();
-    // $DonneesInjectees['lesMarques'] = $this->ModeleProduit->retournerMarque();
-		$DonneesInjectees['TitreDeLaPage'] = 'Boutique';
-		$this->load->view('templates/header');
-		$this->load->view('visiteur/afficherBoutique', $DonneesInjectees);
-		$this->load->view('templates/footer');
+    $this->load->view('templates/header');
+    $DonneesInjectees['TitreDeLaPage'] = 'Qui sommes-nous ?';
+    $this->load->view('visiteur/afficherInfosSite',$DonneesInjectees);
+    $this->load->view('templates/footer');
     
-  } // afficher l'acceuil
+  } // afficher l'accueil
+
+  public function afficherBoutique() 
+	{
+		// les noms des entrées dans $config doivent être respectés
+		$config = array();
+		$config["base_url"] = site_url('visiteur/afficherBoutique');
+		$config["total_rows"] = $this->ModeleProduit->nombreDeProduits();
+		$config["per_page"] = 3; // nombre d'articles par page
+		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
+		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
+		$config['first_link'] = 'Premier';
+		$config['last_link'] = 'Dernier';
+		$config['next_link'] = 'Suivant';
+		$config['prev_link'] = 'Précédent';
+		$this->pagination->initialize($config);
+		$noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
+		de la méthode, on affecte 0 à $noPage */
+    $DonneesInjectees["lesProduits"] = $this->ModeleProduit->retournerProduitsLimite($config["per_page"], $noPage);
+		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
+		$this->load->view('templates/header');
+		$this->load->view("visiteur/afficherBoutique", $DonneesInjectees);
+		$this->load->view('templates/footer');
+  } // fin listerLesArticlesAvecPagination
+  
+  public function afficherBoutiqueRecherche($Recherche=NULL) // afficher la boutique par rapport à la recherche
+	{
+    $Recherche=$_GET['search'];
+    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsRecherche($Recherche);
+		$DonneesInjectees['TitreDeLaPage'] = 'Résultat de votre recherche';
+		$this->load->view('templates/header');
+		$this->load->view('visiteur/afficherBoutiqueRecherche', $DonneesInjectees);
+		$this->load->view('templates/footer'); 
+  }
+// A REVOIR SI PAS MIEUX afficherBoutiqueParCatégorie ??? 
+  public function afficherBoutiqueParEquipement($noCategorie=NULL)
+  {
+    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsCategorie($noCategorie);
+    $this->load->view('templates/header');
+		$this->load->view('visiteur/afficherBoutiqueParEquipement', $DonneesInjectees);
+		$this->load->view('templates/footer');
+  }
+
+  public function afficherBoutiqueParTextile($noCategorie=NULL)
+  {
+    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsCategorie($noCategorie);
+    $this->load->view('templates/header');
+		$this->load->view('visiteur/afficherBoutiqueParTextile', $DonneesInjectees);
+		$this->load->view('templates/footer');
+  }
+
+  public function afficherBoutiqueParAccessoire($noCategorie=NULL)
+  {
+    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsCategorie($noCategorie);
+    $this->load->view('templates/header');
+		$this->load->view('visiteur/afficherBoutiqueParAccessoire', $DonneesInjectees);
+		$this->load->view('templates/footer');
+  }
+
+  public function afficherBoutiqueParNouveautes()
+  {
+    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsNouveautes();
+    $DonneesInjectees['TitreDeLaPage'] = 'Nouveautés';
+    $this->load->view('templates/header');
+		$this->load->view('visiteur/afficherBoutiqueParNouveautes', $DonneesInjectees);
+		$this->load->view('templates/footer');
+  }
 
   public function voirUnProduit($noProduit = NULL) // valeur par défaut de noProduit = NULL
   {
+    $this->load->helper('form');
     $DonneesInjectees['unProduit'] = $this->ModeleProduit->retournerProduits($noProduit);
     if (empty($DonneesInjectees['unProduit']))
-    {   // pas d'article correspondant au n°
+    {   // pas de produit correspondant au n°
       show_404();
     }
-    $DonneesInjectees['TitreDeLaPage'] = 'Détails du produit';
-    // ci-dessus, entrée ['cTitre'] de l'entrée ['unArticle'] de $DonneesInjectees
     $this->load->view('templates/header');
     $this->load->view('visiteur/voirUnProduit', $DonneesInjectees);
     $this->load->view('templates/footer');
-  } // voirUnArticle
+  }
 
-  public function afficherPanier() // afficher l'accueil
-	{
-    $DonneesInjectees['TitreDeLaPage'] = 'Panier';
+  public function voirUneCommande($noCommande = NULL) // valeur par défaut de noProduit = NULL
+  {
+    $NoClient=$this->session->id;
+    $DonneesInjectees['uneCommande'] = $this->ModeleCommande->retournerCommande($noCommande);
+    if (empty($DonneesInjectees['uneCommande']))
+    {   // pas de produit correspondant au n°
+      show_404();
+    }
+    $DonneesInjectees['lesLignes'] = $this->ModeleLigne->retournerHistoriqueLignes($noCommande);
     $this->load->view('templates/header');
-    $this->load->view('visiteur/afficherPanier',$DonneesInjectees);
+    $this->load->view('visiteur/voirUneCommande', $DonneesInjectees);
     $this->load->view('templates/footer');
-    
-  } // afficher l'acceuil
+  }
 
   public function afficherProfil() // afficher l'accueil
 	{
     $this->load->library('session');
     if (!is_null($this->session->identifiant)) // s'il y a une session ouverte
     {
-      $Id=$this->session->id;
+      $NoClient=$this->session->id;
       $this->load->helper('form');
       $DonneesInjectees['TitreDeLaPage'] = 'Profil';
-
-      $DonneesInjectees['UnClient'] = $this->ModeleClient->retournerClients($Id);
+      $Etat="Traitee";
+      $DonneesInjectees['lesCommandes'] = $this->ModeleCommande->retournerCommandes($NoClient,$Etat);  
+      $DonneesInjectees['UnClient'] = $this->ModeleClient->retournerClients($NoClient);
       if ($this->input->post('boutonModifierProfil')) // On test si le formulaire a été posté.
       {
         // le bouton 'submit', boutonAjouter est <> de NULL, on a posté quelque chose.
@@ -89,28 +164,25 @@ class Visiteur extends CI_Controller
         ); // on récupère les données du formulaire de connexion
         // on va chercher l'utilisateur correspondant aux Id et MdPasse saisis
         $ClientRetourne = $this->ModeleClient->retournerClient($Client);
-        $this->ModeleClient->modifierUnClient($donneesAModifier,$Id); // appel du modèle
+        $this->ModeleClient->modifierUnClient($donneesAModifier,$NoClient); // appel du modèle
         $this->load->view('templates/header');
         $this->load->view('visiteur/afficherAccueil', $DonneesInjectees);
         $this->load->view('templates/footer');
-    }
-    else
-    {  
-      // si formulaire non posté = bouton 'submit' à NULL : on est jamais passé par le formulaire -> on envoie le formulaire 
-      $this->load->view('templates/header');
-      $this->load->view('visiteur/afficherProfil', $DonneesInjectees);
-      $this->load->view('templates/footer');
-    }
-       
+      }
+      else
+      {  
+        // si formulaire non posté = bouton 'submit' à NULL : on est jamais passé par le formulaire -> on envoie le formulaire 
+        $this->load->view('templates/header');
+        $this->load->view('visiteur/afficherProfil', $DonneesInjectees);
+        $this->load->view('templates/footer');
+      }
     }
     else
     {
       $this->load->helper('url'); // pour utiliser redirect
-      redirect('/visiteur/seConnecter'); // pas les droits : redirection vers connexion
+      redirect('visiteur/seConnecter'); // pas les droits : redirection vers connexion
     }
-    
-    
-  } // afficher l'acceuil
+  }
 
   public function seConnecter()
   {
@@ -140,7 +212,8 @@ class Visiteur extends CI_Controller
       else
       {
         $this->load->view('templates/header');
-        $this->load->view('visiteur/afficherAccueil', $DonneesInjectees);
+        $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsNouveautes();
+        redirect('visiteur/afficherAccueil', $DonneesInjectees);
         $this->load->view('templates/footer');
       }
       
@@ -185,6 +258,7 @@ class Visiteur extends CI_Controller
           $this->load->library('session');
           $this->session->identifiant = $ClientRetourne->EMAIL;
           $this->session->statut = $ClientRetourne->PROFIL;
+          $this->session->id = $ClientRetourne->NOCLIENT;
           $DonneesInjectees['Identifiant'] = $Client['EMAIL'];
           $this->load->view('templates/header');
           $this->load->view('visiteur/afficherAccueil', $DonneesInjectees);
@@ -205,6 +279,106 @@ class Visiteur extends CI_Controller
       $this->load->view('templates/footer');
     }
   } // s'inscrire
+
+  public function supprimerPanier($NoCommande=NULL,$NoProduit=NULL)
+  {
+    //récupérer la quantité qui va se faire supprimer
+    $LigneRetourne=$this->ModeleLigne->retournerLigne($NoCommande,$NoProduit);
+    $quantite=$LigneRetourne["QUANTITECOMMANDEE"];
+
+    //supprimer le produit du panier
+    $this->ModeleLigne->supprimerPanier($NoProduit,$NoCommande);
+
+    //remettre la quantité dans la base de données 
+    $ProduitRetourne=$this->ModeleProduit->retournerProduits($NoProduit);
+    $quantiteEnStock=$ProduitRetourne['QUANTITEENSTOCK'];
+    $this->ModeleProduit->modifierUnProduitSuppPanier($quantite,$NoProduit,$quantiteEnStock);
+		redirect('visiteur/afficherPanier');
+  }
+
+  public function modifierPanier($NoProduit=NULL,$NoCommande=NULL)
+  {
+    //FAIRE LA MODIFICATION DU PANIER 
+  }
+
+  public function ajouterPanier($NoProduit=NULL) // ajouter au panier, d'abord commande puis ligne
+	{
+    $this->load->helper('form');
+    if ($this->input->post('btnAjouterPanier')) // On test si le formulaire a été posté.
+    {
+      $NoClient=$this->session->id;
+      $Etat="PanierEnCours";
+      
+      // le bouton 'submit', boutonAjouter est <> de NULL, on a posté quelque chose.
+      $donneesAInsererCommande = array(
+        'NOCLIENT' => $this->session->id,
+        'DATECOMMANDE' => date("Y-m-d H:i:s"),
+        'ETAT'=> "PanierEnCours",
+      ); 
+      var_dump($Etat);
+      var_dump($NoClient);
+      $CommandeRetourne=$this->ModeleCommande->retournerCommandeHistorique($NoClient,$Etat);
+      var_dump($CommandeRetourne);
+      if (!($CommandeRetourne==null)) // la commande existe déjà 
+      {
+        $NoCommande=$CommandeRetourne['NOCOMMANDE'];
+      }
+      else 
+      { 
+        $this->ModeleCommande->insererUneCommande($donneesAInsererCommande); // appel du modèle
+        $CommandeRetourne=$this->ModeleCommande->retournerCommandes($NoClient,$Etat);
+        $NoCommande=$CommandeRetourne['NOCOMMANDE'];  
+      }
+      // AJOUT DANS LIGNE 
+      $donneesAInsererLigne = array(
+      'NOCOMMANDE' => $NoCommande,
+      'NOPRODUIT' => $NoProduit, 
+      'QUANTITECOMMANDEE' => $this->input->post('txtQuantite'),
+      );
+      $LigneRetourne=$this->ModeleLigne->retournerLigne($NoCommande,$NoProduit);
+      if (!($LigneRetourne==null)) // la ligne existe déjà 
+      {
+        $this->load->view('templates/header');
+        redirect('visiteur/afficherPanier');
+        $this->load->view('templates/footer');
+      }
+      else 
+      {
+        $this->ModeleLigne->insererUneLigne($donneesAInsererLigne); // appel du modèle
+        //UPDATE sur la quantité en stock 
+        $donnesAModifier= $this->input->post('txtQuantite');
+        $ProduitRetourne=$this->ModeleProduit->retournerProduits($NoProduit);
+        $quantiteEnStock=$ProduitRetourne['QUANTITEENSTOCK'];
+        $this->ModeleProduit->modifierUnProduit($donnesAModifier,$NoProduit,$quantiteEnStock);
+
+        redirect('visiteur/afficherPanier');
+      }
+    }
+    else
+    {  
+      /* si formulaire non posté = bouton 'submit' à NULL : on est jamais passé par le formulaire -> on envoie le formulaire */
+      $this->load->view('templates/header');
+      $this->load->view('visiteur/voirUnProuit', $DonneesInjectees);
+      $this->load->view('templates/footer');
+    }
+  }// ajouterPanier
+
+
+    public function afficherPanier() // afficher l'accueil
+    {
+      $NoClient=$this->session->id;
+      $Etat="PanierEnCours";
+      $CommandeRetourne=$this->ModeleCommande->retournerCommandeHistorique($NoClient,$Etat);
+      $NoCommande=$CommandeRetourne['NOCOMMANDE'];  
+      $DonneesInjectees['lesLignes'] = $this->ModeleLigne->retournerLignes($NoCommande);
+      $DonneesInjectees['totalPanier']=$this->ModeleCommande->totalPanier($NoCommande);
+      $DonneesInjectees['TitreDeLaPage'] = 'Panier';
+      $this->load->view('templates/header');
+      $this->load->view('visiteur/afficherPanier', $DonneesInjectees);
+      $this->load->view('templates/footer');
+      
+    } // afficher panier
+  
 
   public function seDeconnecter() 
   {

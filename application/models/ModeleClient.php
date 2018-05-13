@@ -41,5 +41,11 @@ class ModeleClient extends CI_Model {
     {
         return $this->db->update('CLIENT',$pDonnesAModifier,'NOCLIENT='.$pNoClient);
     } // modifier un client
+
+    public function supprimerUnClient($pNoClient)
+    {
+        return $this->db->delete('CLIENT','NOCLIENT='.$pNoClient);
+    } // supprimer un client
+    
     
 } // Fin Classe
