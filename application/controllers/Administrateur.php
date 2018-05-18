@@ -82,8 +82,8 @@ class Administrateur extends CI_Controller {
 	{
 		// les noms des entrées dans $config doivent être respectés
 		$config = array();
-		$config["base_url"] = site_url('visiteur/afficherBoutique');
-		$config["total_rows"] = $this->ModeleProduit->nombreDeProduits();
+		$config["base_url"] = site_url('administrateur/afficherBoutique');
+		$config["total_rows"] = $this->ModeleProduit->nombreDeProduitsAdmin();
 		$config["per_page"] = 3; // nombre d'articles par page
 		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
 		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
@@ -95,10 +95,10 @@ class Administrateur extends CI_Controller {
 		$noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
 		de la méthode, on affecte 0 à $noPage */
-    $DonneesInjectees["lesProduits"] = $this->ModeleProduit->retournerProduitsLimite($config["per_page"], $noPage);
+        $DonneesInjectees["lesProduits"] = $this->ModeleProduit->retournerProduitsLimiteAdmin($config["per_page"], $noPage);
 		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
 		$this->load->view('templates/header');
-		$this->load->view("visiteur/afficherBoutique", $DonneesInjectees);
+		$this->load->view("administrateur/afficherBoutique", $DonneesInjectees);
 		$this->load->view('templates/footer');
   } // fin listerLesArticlesAvecPagination
   

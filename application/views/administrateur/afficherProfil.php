@@ -22,7 +22,7 @@
                         echo form_input(array('name'=>'txtPrenom','value'=>$UnClient["PRENOM"],'type'=>'text','title'=>'Lettres seulement','class'=>'form-control','maxlength'=>'40','placeholder'=>'Entrez un prénom')).'<BR>';
 
                         echo form_label('Identifiant ','lblIdentifiant'); 
-                        echo form_input(array('type'=>'email','value'=>$UnClient["EMAIL"],'name'=>'txtIdentifiant','title'=>'Email seulement','class'=>'form-control','maxlength'=>'30','placeholder'=>$this->session->identifiant)).'<BR>';
+                        echo form_input(array('readonly'=>'readonly','type'=>'email','value'=>$UnClient["EMAIL"],'name'=>'txtIdentifiant','title'=>'Email seulement','class'=>'form-control','maxlength'=>'30','placeholder'=>$this->session->identifiant)).'<BR>';
 
                         echo form_label('Mot de passe ','lblMotDePasse');
                         echo form_input(array('name'=>'txtMotDePasse','value'=>$UnClient["MOTDEPASSE"],'type'=>'pwd','title'=>'Nombres ou lettres seulement','class'=>'form-control','maxlength'=>'30','placeholder'=>'Entrez un mot de passe')).'<BR>';

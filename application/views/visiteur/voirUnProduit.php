@@ -12,7 +12,7 @@
         <?php
             echo '<h3>'.$unProduit['LIBELLE'].'</h3>';
             echo ' <h5>Détails :</h5> '.$unProduit['DETAIL'];
-            echo '<p> <br> Prix: ' .$unProduit['PRIXHT'].' </p>';   
+            echo '<p> <br> Prix: ' .(($unProduit['PRIXHT'])*(1+ ($unProduit['TAUXTVA']/100))).' </p>';   
             echo '<p><img  width="25%" src="'. img_url($unProduit['NOMIMAGE']) .'"/></p>'; 
             echo '<p> <br> Date de l\'ajout: ' .$unProduit['DATEAJOUT'].'</p>'; 
             if ($unProduit['QUANTITEENSTOCK']<"10"):

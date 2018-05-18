@@ -137,11 +137,10 @@ class ModeleProduit extends CI_Model
         return $this->db->insert('PRODUIT',$pDonnesAInserer);
     } // insérer un produit
     
-    public function modifierUnProduit($pDonnesAModifier=FALSE,$pNoProduit=FALSE,$pQuantiteEnStock=FALSE)
+    public function modifierUnProduit($pDonnesAModifier=FALSE,$pNoProduit=FALSE)
     {
-        $this->db->set('QUANTITEENSTOCK', $pQuantiteEnStock-$pDonnesAModifier);
         $this->db->where('PRODUIT.NOPRODUIT',$pNoProduit);
-        return $this->db->update('PRODUIT');
+        return $this->db->update('PRODUIT',$pDonnesAModifier);
     } // modifier un produit
 
     public function modifierUnProduitSuppPanier($pQuantite=FALSE,$pNoProduit=FALSE,$pQuantiteEnStock=FALSE)

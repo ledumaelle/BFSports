@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     <div class="col-sm-1">
-                        <a href="<?php echo site_url('visiteur/afficherBoutiqueParNouveautes') ?>" class="btn btn-primary dropdown-toggle" role="button">Nouveautés</a>
+                        <a href="<?php echo site_url('visiteur/afficherBoutiqueParNouveautes') ?>" class="btn btn-primary" >Nouveautés</a>
                     </div>
                
             </div>
@@ -50,7 +50,6 @@
                             <thead>
                                 <tr>
                                     <th>Produit</th>
-                                    <th>Libellé</th>
                                     <th>Prix</th>
                                     <th>Marque</th>
                                     <th>Catégorie</th>
@@ -60,8 +59,7 @@
                                 <?php foreach ($lesProduits as $unProduit):
                                 $unProduit = json_decode(json_encode($unProduit), True);
                                     echo  '<tr>  
-                                        <td class="col-sm-2"> <img  width="50%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
-                                        <td class="col-sm-2">' .$unProduit['LIBELLE'].'</td>
+                                        <td class="col-sm-2"> <img  width="35%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
                                         <td class="col-sm-1">' .(($unProduit['PRIXHT'])*(1+ ($unProduit['TAUXTVA']/100))).'€</td>
                                         <td class="col-sm-1">' .$unProduit['NOMMARQUE'].'</td>
                                         <td class="col-sm-1">' .$unProduit['LIBELLECATEGORIE'].'</td>

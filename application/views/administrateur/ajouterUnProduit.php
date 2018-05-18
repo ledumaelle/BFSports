@@ -49,7 +49,7 @@
                                         <span class="input-group-addon">
                                             <span class="fa fa-calendar"></span>
                                         </span>
-                                        <input type='text' class="form-control" placeholder="AAAA/MM/JJ" id="datepicker" />
+                                        <input type='text' class="form-control" placeholder="AAAA/MM/JJ" id="datepicker" name="date" />
                                     </div>
                                 </div>
                             </div>

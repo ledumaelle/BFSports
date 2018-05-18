@@ -28,7 +28,7 @@
                         echo form_input(array('name'=>'txtVille','type'=>'text','value'=>$UnClient["VILLE"],'title'=>'Lettres seulement','class'=>'form-control','maxlength'=>'40','placeholder'=>'Entrez une ville')).'<BR>';
 
                         echo form_label('Code Postal ','lblCodePostal');
-                        echo form_input(array('name'=>'txtCodePostal','type'=>'text','value'=>$UnClient["CODEPOSTAL"],'title'=>'Nombres seulement','class'=>'form-control','maxlength'=>'11','placeholder'=>'Entrez un code postal')).'<BR>';
+                        echo form_input(array('name'=>'txtCodePostal','type'=>'text','minlenght'=>'5','value'=>$UnClient["CODEPOSTAL"],'title'=>'Nombres seulement','class'=>'form-control','maxlength'=>'11','placeholder'=>'Entrez un code postal')).'<BR>';
 
                         echo form_label('Identifiant ','lblIdentifiant'); 
                         echo form_input(array('type'=>'email','name'=>'txtIdentifiant','readonly'=>'readonly','value'=>$UnClient["EMAIL"],'title'=>'Email seulement','class'=>'form-control','maxlength'=>'30')).' <BR>';
