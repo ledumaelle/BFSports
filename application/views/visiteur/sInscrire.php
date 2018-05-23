@@ -26,7 +26,7 @@
                         echo form_input(array('name'=>'txtVille','type'=>'text','title'=>'Lettres seulement','class'=>'form-control','maxlength'=>'40','placeholder'=>'Entrez une ville')).'<BR>';
 
                         echo form_label('Code Postal ','lblCodePostal');
-                        echo form_input(array('name'=>'txtCodePostal','type'=>'text','title'=>'Nombres seulement','class'=>'form-control','maxlength'=>'11','placeholder'=>'Entrez un code postal')).'<BR>';
+                        echo form_input(array('name'=>'txtCodePostal','type'=>'text','title'=>'Nombres seulement','class'=>'form-control','pattern'=>'[0-9]*','minlength'=>'5','maxlength'=>'5','placeholder'=>'Entrez un code postal')).'<BR>';
 
                         echo form_label('Identifiant ','lblIdentifiant'); 
                         echo form_input(array('type'=>'email','name'=>'txtIdentifiant','required'=>'required','title'=>'Email seulement','class'=>'form-control','maxlength'=>'30','placeholder'=>'Entrez un email')).'<BR>';

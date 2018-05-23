@@ -14,7 +14,6 @@ class ModeleProduit extends CI_Model
         $this->db->where('PRODUIT.NOPRODUIT', $pNoProduit); 
         $this->db->where('PRODUIT.DISPONIBLE', 1); 
         $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0); 
-        $this->db->order_by('PRODUIT.NOPRODUIT');
         $requete = $this->db->get();
         return $requete->row_array(); // retour d'un tableau associatif
     }
@@ -115,12 +114,20 @@ class ModeleProduit extends CI_Model
 			return $jeuDEnregsitrements;
 		} // fin if
 		return false;
-    } // retournerArticlesLimite
+    } 
 
     public function nombreDeProduitsAdmin() 
 	{ // méthode utilisée pour la pagination	
 		return $this->db->count_all("PRODUIT");
-    } // nombreDArticles
+    }
+
+    public function meilleurProduit()
+    {
+        $sql="SELECT * FROM Produit 
+        WHERE noproduit = (SELECT Max(quantiteCommandee)FROM ligne,produit WHERE produit.noProduit=ligne.noProduit)";
+        $requete = $this->db->query($sql);
+        return $requete->row_array();
+    }
 
     public function nombreDeProduits() 
     { // méthode utilisée pour la pagination
@@ -129,25 +136,116 @@ class ModeleProduit extends CI_Model
         $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
         $this->db->where('PRODUIT.DISPONIBLE', 1);
         $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);	
-		return $this->db->count_all("PRODUIT");
-    } // nombreDArticles
+		return $this->db->count_all_results(); 
+    }
     
+    public function nombreDeProduitsEquipement() 
+    { // méthode utilisée pour la pagination
+        $this->db->from('PRODUIT'); 
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('CATEGORIE.NOCATEGORIE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);	
+		return $this->db->count_all_results(); 
+    } 
+
+    public function retournerProduitsEquipementLimite($nombreDeLignesARetourner, $noPremiereLigneARetourner)
+	{// Nota Bene : surcharge non supportée par PHP
+        $this->db->limit($nombreDeLignesARetourner, $noPremiereLigneARetourner);
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);
+        $this->db->where('CATEGORIE.NOCATEGORIE' , 1);
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+		if ($requete->num_rows() > 0) { // si nombre de lignes > 0
+			foreach ($requete->result() as $ligne) {
+				$jeuDEnregsitrements[] = $ligne;
+			}
+			return $jeuDEnregsitrements;
+		} // fin if
+		return false;
+    } // retournerArticlesLimite
+
+
+    public function nombreDeProduitsTextile() 
+    { // méthode utilisée pour la pagination
+        $this->db->from('PRODUIT'); 
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.NOCATEGORIE', 2);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);	
+		return $this->db->count_all_results(); 
+    } 
+
+    public function retournerProduitsTextileLimite($nombreDeLignesARetourner, $noPremiereLigneARetourner)
+	{// Nota Bene : surcharge non supportée par PHP
+        $this->db->limit($nombreDeLignesARetourner, $noPremiereLigneARetourner);
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);
+        $this->db->where('CATEGORIE.NOCATEGORIE' , 2);
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+		if ($requete->num_rows() > 0) { // si nombre de lignes > 0
+			foreach ($requete->result() as $ligne) {
+				$jeuDEnregsitrements[] = $ligne;
+			}
+			return $jeuDEnregsitrements;
+		} // fin if
+		return false;
+    } // retournerArticlesLimite
+
+    public function nombreDeProduitsAccessoireDeFrappe() 
+    { // méthode utilisée pour la pagination
+        $this->db->from('PRODUIT'); 
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.NOCATEGORIE', 3);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);	
+		return $this->db->count_all_results(); 
+    } 
+
+    public function retournerProduitsAccessoireDeFrappeLimite($nombreDeLignesARetourner, $noPremiereLigneARetourner)
+	{// Nota Bene : surcharge non supportée par PHP
+        $this->db->limit($nombreDeLignesARetourner, $noPremiereLigneARetourner);
+        $this->db->from('PRODUIT'); 
+        $this->db->join('MARQUE', 'MARQUE.NOMARQUE=PRODUIT.NOMARQUE', 'left');
+        $this->db->join('CATEGORIE', 'CATEGORIE.NOCATEGORIE=PRODUIT.NOCATEGORIE', 'left');
+        $this->db->where('PRODUIT.DISPONIBLE', 1);
+        $this->db->where('PRODUIT.QUANTITEENSTOCK >', 0);
+        $this->db->where('CATEGORIE.NOCATEGORIE' , 3);
+        $this->db->order_by('PRODUIT.NOPRODUIT');
+        $requete = $this->db->get();
+		if ($requete->num_rows() > 0) { // si nombre de lignes > 0
+			foreach ($requete->result() as $ligne) {
+				$jeuDEnregsitrements[] = $ligne;
+			}
+			return $jeuDEnregsitrements;
+		} // fin if
+		return false;
+    } // retournerArticlesLimite
+
     public function insererUnProduit($pDonnesAInserer)
     {
         return $this->db->insert('PRODUIT',$pDonnesAInserer);
     } // insérer un produit
     
-    public function modifierUnProduit($pDonnesAModifier=FALSE,$pNoProduit=FALSE)
+    public function modifierQteProduit($pDonneeAModifier=FALSE,$pNoProduit=FALSE,$quantiteEnStock)
     {
-        $this->db->where('PRODUIT.NOPRODUIT',$pNoProduit);
-        return $this->db->update('PRODUIT',$pDonnesAModifier);
-    } // modifier un produit
-
-    public function modifierUnProduitSuppPanier($pQuantite=FALSE,$pNoProduit=FALSE,$pQuantiteEnStock=FALSE)
-    {
-        $this->db->set('QUANTITEENSTOCK', $pQuantiteEnStock+$pQuantite);
+        $this->db->set('QUANTITEENSTOCK', $quantiteEnStock-$pDonneeAModifier);
         $this->db->where('PRODUIT.NOPRODUIT',$pNoProduit);
         return $this->db->update('PRODUIT');
+    } // modifier un produit
+
+    public function modifierUnProduit($pDonneesAModifier=FALSE,$pNoProduit=FALSE)
+    {
+        $this->db->where('PRODUIT.NOPRODUIT',$pNoProduit);
+        return $this->db->update('PRODUIT',$pDonneesAModifier);
     } // modifier un produit
 
     

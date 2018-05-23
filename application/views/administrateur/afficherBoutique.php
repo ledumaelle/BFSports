@@ -6,7 +6,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
     </head>
     <body>
-    <a href="<?php echo site_url('administrateur/ajouterUnProduit') ?> "><h3 class="text-success">Ajouter un produit</h3></a> 
+    <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Ajouter
+                            <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<?php echo site_url('administrateur/ajouterUnProduit') ?> ">Un produit</a></li>
+                                    <li><a href="<?php echo site_url('administrateur/ajouterUneMarque') ?> ">Une marque</a></li>
+                                    <li><a href="<?php echo site_url('administrateur/ajouterUneCategorie') ?> ">Une catégorie</a></li>
+                                </ul>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-1">

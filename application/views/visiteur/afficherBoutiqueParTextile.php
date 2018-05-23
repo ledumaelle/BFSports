@@ -13,9 +13,10 @@
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Catégories
                             <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParEquipement/1') ?> ">Equipement</a></li>
-                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParTextile/2') ?> "> Textile</a></li> 
-                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParAccessoire/3') ?> ">Accessoire de frappe </a></li>
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutique') ?> ">Tous</a></li>
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParEquipement') ?> ">Equipement</a></li>
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParTextile') ?> "> Textile</a></li> 
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParAccessoire') ?> ">Accessoire de frappe </a></li>
                                 </ul>
                         </div>
                     </div>
@@ -55,8 +56,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                
-                <?php foreach ($lesProduits as $unProduit):
+                            <?php if (!($lesProduits ==null)):
+                                foreach ($lesProduits as $unProduit):
+                                $unProduit = json_decode(json_encode($unProduit), True);
                        if ($unProduit["DISPONIBLE"]=="1") : $disponiblite= "En Stock"; else : $disponiblite ="Non disponible"; endif;
                        echo  '<tr>  
                        <td class="col-sm-2"> <img  width="35%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
@@ -64,7 +66,8 @@
                        <td class="col-sm-1">' .$unProduit['NOMMARQUE'].'</td>
                         </tr>';
                     // ; ferme le echo
-                    endforeach ?>   
+                    endforeach ;
+                                endif;?>   
                             </tbody>
                         </table>
                     </div>
@@ -75,6 +78,7 @@
             </div>
         </div>
             <p>Pour avoir afficher le détail d'un produit, cliquer sur son titre</p> 
+            <p><?php echo $liensPagination; ?></p>
     </body>
 </html>
 

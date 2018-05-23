@@ -7,6 +7,7 @@ class ModeleMarque extends CI_Model
         /* chargement database.php (dans config), obligatoirement dans le constructeur */
     }
 
+
     public function retournerMarque($pNoMarque = FALSE) 
     {
         if ($pNoMarque === FALSE) // pas de n° d'Produit en paramètre
@@ -17,9 +18,22 @@ class ModeleMarque extends CI_Model
             return $requete->result_array(); // retour d'un tableau associatif
         }
         // ici on va chercher l'Produit dont l'id est $pNoProduit
-        $requete = $this->db->get_where('MARQUE', array('NOMARQUE' => $pNoMarque)); // --> voirUnProduit.php
+        $requete = $this->db->get_where('MARQUE', array('NOMARQUE' => $pNoMarque)); 
         return $requete->row_array(); // retour d'un tableau associatif
-    } // fin retournerProduits
+    } 
+
+    public function retournerUneMarque($pNomMarque = FALSE) 
+    {
+        // ici on va chercher l'Produit dont l'id est $pNoProduit
+        $requete = $this->db->get_where('MARQUE', array('NOMMARQUE' => $pNomMarque)); 
+        return $requete->row_array(); // retour d'un tableau associatif
+    } 
+
+    public function insererUneMarque($pDonnesAInserer)
+    {
+        return $this->db->insert('Marque',$pDonnesAInserer);
+    } // insérer un produit
+    
 
     
 } // Fin Classe

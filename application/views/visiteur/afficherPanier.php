@@ -4,7 +4,7 @@
                 <title> Panier </title>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        </head>
+                <script type="text/javascript" src="<?php echo js_url('test') ?>"></script>
         <body>
         <div class="container-fluid">
         <h2 class="text-success"> <?php echo $TitreDeLaPage ?> </h2><br/>
@@ -36,7 +36,7 @@
                 <td class="col-sm-2"><img  width="50%" src="<?php echo img_url($items['option']) ?>"/></td>
                 <td class="col-sm-2">
                 <a href="<?php echo site_url('visiteur/diminuerQuantite/'.$items['rowid'].'/'.$items['qty']) ?>" class="btn btn-primary " name="btnDiminuerQuantite"><span class = "glyphicon glyphicon-minus"></span></a>
-                <?php echo form_input(array('readonly'=>'readonly','title'=>'Veuillez entrer des chiffres svp','name' => $i.'[qty]', 'value' => $items['qty'], 'maxlength' => '3', 'size' => '3')); ?>
+                <?php echo form_input(array('readonly'=>'readonly','name' => $i.'[qty]', 'value' => $items['qty'], 'maxlength' => '3', 'size' => '3')); ?>
                 <a href="<?php echo site_url('visiteur/augmenterQuantite/'.$items['rowid'].'/'.$items['qty']) ?>" class="btn btn-primary" name="btnAugmenterQuantite"><span class = "glyphicon glyphicon-plus"></span></a>
                </td>
                 <td class="col-sm-2"><?php echo $items['name']; ?> </td>
@@ -55,8 +55,21 @@
 </tr>
 
 </table>
+<a href=" <?php echo site_url('visiteur/validerPanier') ?>" type="submit" name="btnValiderPanier" class="btn btn-success"  onClick="return ConfirmerMessage()">Valider votre panier</a>
+<script type="text/javascript">
+   function ConfirmerMessage()
+{
+    var r = confirm ("Voulez-vous vraiment continuer ?");
+    if (r==true)
+        {return true;}
+    else 
+        {return false;}
 
-<a href=" <?php echo site_url('visiteur/validerPanier') ?>" type="submit" name="btnValiderPanier" class="btn btn-success"  onclick="<?php echo js_url('confirmation.js') ?>">Valider votre panier</a>
+}        
+</script>
+
 <?php echo '<p>'.anchor('visiteur/afficherBoutique','Retour à la liste des produits').'</p>'; ?>
         </body>
+        
+
 </html>

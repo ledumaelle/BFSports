@@ -20,13 +20,13 @@
                         echo form_open('administrateur/ajouterUnProduit');
 
                         echo form_label("Libellé du produit : ", 'lblLibelle');
-                        echo form_input(array('name'=>'txtLibelle','type'=>'text','required'=>'required','class'=>'form-control', 'title'=>'Saisir un libellé','maxlength'=>'128','placeholder'=>'Entrez un libellé')).'<BR>';
+                        echo form_input(array('pattern'=>'^[a-zA-Z0-9][a-z A-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿ_-]+$','name'=>'txtLibelle','type'=>'text','required'=>'required','class'=>'form-control', 'title'=>'Saisir un libellé','maxlength'=>'128','placeholder'=>'Entrez un libellé')).'<BR>';
 
                         echo form_label("Détail du produit : ", 'lblDetail');
                         echo form_textarea(array('required'=>'required','name'=>'txtDetail','type'=>'text','class'=>'form-control','title'=>'Saisir le détail du produit','placeholder'=>'Entrez le détail')).'<BR>';
 
                         echo form_label('Prix HT : ','lblPrixHT');
-                        echo form_input(array('name'=>'txtPrixHT', 'type'=>'text','title'=>'Saisir un prix','class'=>'form-control','placeholder'=>'Entrez le prix HT', 'required'=>'required')).'<BR>';
+                        echo form_input(array('pattern'=>'^[0-9,]+$','name'=>'txtPrixHT', 'type'=>'text','title'=>'Saisir un prix','class'=>'form-control','placeholder'=>'Entrez le prix HT', 'required'=>'required')).'<BR>';
 
                         echo form_label('Taux TVA : ','lblTauxTVA');
                         $optionsTaux=array('20'=> 'Taux 20%','5.5'=> 'Taux 5,5%','10'=> 'Taux 10%');
@@ -34,9 +34,9 @@
 
                         echo form_label('Nom du fichier image : ','lblNomFichierImage');
                         echo form_upload(array('name'=>'txtNomFichierImage','type'=>'file','title'=>'Sélectionnez le fichier')).'<BR>';
-
+                        
                         echo form_label('Quantité en stock : ','lblQauntiteStock');
-                        echo form_input(array('name'=>'txtQuantiteStock','type'=>'text','title'=>'Saisir une quantité','maxlength'=>'11','placeholder'=>'Entrez la quantité en stock', 'class'=>'form-control','required'=>'required')).'<BR>';
+                        echo form_input(array('pattern'=>'^[1-9][0-9]*$','name'=>'txtQuantiteStock','type'=>'text','title'=>'Saisir une quantité','maxlength'=>'11','placeholder'=>'Entrez la quantité en stock', 'class'=>'form-control','required'=>'required')).'<BR>';
 
                         echo form_label('Date ajout du produit: ','lblDateAjout');
 ?>
@@ -49,7 +49,7 @@
                                         <span class="input-group-addon">
                                             <span class="fa fa-calendar"></span>
                                         </span>
-                                        <input type='text' class="form-control" placeholder="AAAA/MM/JJ" id="datepicker" name="date" />
+                                        <input type='text' class="form-control" placeholder="AAAA/MM/JJ" id="datepicker" name="date" required pattern="^[0-9-]+$"/>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +83,19 @@
                         $optionsDisponible=array('1'=> 'Oui','0'=> 'Non');
                         echo form_dropdown(array('name'=>'dpdnDisponible','title'=>'Disponible','class'=>'form-control','required'=>'required'),$optionsDisponible).'<BR>';
                                                 
-                        echo form_label('Nom de la marque: ','lblNoMarque');
+                        echo form_label('Nom de la marque : ','lblNoMarque');
                         foreach ($lesMarques as $uneMarque):  
                             $optionsMarque[$uneMarque['NOMARQUE']]=$uneMarque['NOMMARQUE'];
                         endforeach;
+
                         echo form_dropdown(array('name'=>'dpdnNoMarque','title'=>'Nom de marque','class'=>'form-control', 'required'=>'required'),$optionsMarque).'<BR>';
                         
-                        echo form_label('Nom de la catégorie: ','lblNoCategorie');
+                        echo form_label('Nom de la catégorie : ','lblNoCategorie');
                         foreach ($lesCategories as $uneCategorie):  
                             $optionsCategorie[$uneCategorie['NOCATEGORIE']]=$uneCategorie['LIBELLECATEGORIE'];
                         endforeach;
                         echo form_dropdown(array('name'=>'dpdnNoCategorie','title'=>'Nom de catégorie','class'=>'form-control', 'required'=>'required'),$optionsCategorie).'<BR>';
-
+                        
                         echo form_submit(array('type'=>'submit','name'=>'btnAjouterProduit','value'=> 'Ajouter','class'=>'btn btn-success')).'<BR>';
 
                         echo form_close();

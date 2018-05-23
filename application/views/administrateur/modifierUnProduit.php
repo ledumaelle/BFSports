@@ -33,10 +33,10 @@
                         echo form_dropdown(array('name'=>'dpdnTauxTVA','value'=>$unProduit["TAUXTVA"],'class'=>'form-control','title'=>'Saisir le taux de TVA','required'=>'required'),$optionsTaux).'<BR>';
 
                         echo form_label('Nom du fichier image : ','lblNomFichierImage');
-                        echo form_input(array('name'=>'txtNomFichierImage','class'=>'form-control','value'=>$unProduit["NOMIMAGE"],'type'=>'text','title'=>'Sélectionnez l\'image')).'<BR>';
-
-                        echo form_label('Quantité en stock : ','lblQauntiteStock');
-                        echo form_input(array('name'=>'txtQuantiteStock','value'=>$unProduit["QUANTITEENSTOCK"],'class'=>'form-control','type'=>'text','title'=>'Saisir une quantité', 'required'=>'required')).'<BR>';
+                        echo form_input(array('value'=>$unProduit["NOMIMAGE"],'pattern'=>'[a-zA-Z0-9.]+$','class'=>'form-control','type'=>'text')).'<BR>';
+                         
+                        echo form_label('Quantité en stock : ','lblQuantiteStock');
+                        echo form_input(array('class'=>'form-control','type'=>'text','value'=>$unProduit["QUANTITEENSTOCK"],'name'=>'txtQuantiteStock','title'=>'Saisir une quantité', 'required'=>'required')).'<BR>';
 
                         echo form_label('Date ajout du produit: ','lblDateAjout');
 ?>

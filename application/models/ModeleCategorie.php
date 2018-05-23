@@ -19,7 +19,19 @@ class ModeleCategorie extends CI_Model
         // ici on va chercher l'Produit dont l'id est $pNoProduit
         $requete = $this->db->get_where('CATEGORIE', array('NOCATEGORIE' => $pNoCategorie)); // --> voirUnProduit.php
         return $requete->row_array(); // retour d'un tableau associatif
-    } // fin retournerProduits
+    }
+
+    public function retournerUneCategorie($pNomCategorie = FALSE) 
+    {
+        // ici on va chercher l'Produit dont l'id est $pNoProduit
+        $requete = $this->db->get_where('CATEGORIE', array('LIBELLECATEGORIE' => $pNomCategorie)); 
+        return $requete->row_array(); // retour d'un tableau associatif
+    } 
+
+    public function insererUneCategorie($pDonnesAInserer)
+    {
+        return $this->db->insert('CATEGORIE',$pDonnesAInserer);
+    } // insérer un produit
 
     
 } // Fin Classe

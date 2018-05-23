@@ -12,6 +12,7 @@ class Administrateur extends CI_Controller {
         $this->load->model('ModeleCommande');
         $this->load->model('ModeleLigne');
         $this->load->library("pagination");
+        $this->load->helper('url'); // helper chargé pour utilisation de site_url (dans la vue)
         /* les méthodes du contrôleur Administrateur doivent n'être
         accessibles qu'à l'administrateur (Nota Bene : a chaque appel
         d'une méthode d'Administrateur on a appel d'abord du constructeur */
@@ -30,14 +31,7 @@ class Administrateur extends CI_Controller {
         $this->load->view('administrateur/afficherAccueil');
         $this->load->view('templates/footer');
     }
-    public function afficherCommande()
-    {
-        $DonneesInjectees['lesCommandes'] = $this->ModeleCommande->retournerCommandeHistorique();
-		$DonneesInjectees['TitreDeLaPage'] = 'Commande';
-		$this->load->view('templates/header');
-		$this->load->view('administrateur/afficherCommande', $DonneesInjectees);
-		$this->load->view('templates/footer');
-    }
+    
 
     public function voirUneCommande($noCommande = NULL) // valeur par défaut de noProduit = NULL
     {
@@ -52,30 +46,89 @@ class Administrateur extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function afficherCommandeParEtat($Etat = NULL)
+    public function validerUneCommande($NoCommande=FALSE)
     {
-        if ($Etat=="NonTraitee")
+        $DonneesInjectees['uneCommande'] = $this->ModeleCommande->retournerUneCommande($NoCommande);
+        var_dump($DonneesInjectees['uneCommande']);
+        if (isset($DonnesInjectees['uneCommande']))
         {
-            $DonneesInjectees['lesCommandes'] = $this->ModeleCommande->retournerCommandeEtat($Etat);
-            $this->load->view('templates/header');
-            $this->load->view('administrateur/afficherCommandeNonTraitee', $DonneesInjectees);
-            $this->load->view('templates/footer');
-
+            show_404();
         }
-        elseif ($Etat=="EnCoursDeTraitement")
-        {
-            $DonneesInjectees['lesCommandes'] = $this->ModeleCommande->retournerCommandeEtat($Etat);
-            $this->load->view('templates/header');
-            $this->load->view('administrateur/afficherCommandeEnCoursDeTraitement', $DonneesInjectees);
-            $this->load->view('templates/footer');
-        }    
-        elseif ($Etat=="Traitee")
-        {
-            $DonneesInjectees['lesCommandes'] = $this->ModeleCommande->retournerCommandeEtat($Etat);
-            $this->load->view('templates/header');
-            $this->load->view('administrateur/afficherCommandeTraitee', $DonneesInjectees);
-            $this->load->view('templates/footer');
-        }    
+        $dateTraitement=date("Y-m-d H:i:s");
+        $this->ModeleCommande->modifierUneCommande($dateTraitement,$NoCommande);
+        redirect('administrateur/afficherCommande',$DonneesInjectees);
+    }
+
+    public function afficherCommandeNonTraitee()
+    {
+            // les noms des entrées dans $config doivent être respectés
+		$config = array();
+		$config["base_url"] = site_url('administrateur/afficherCommandeNonTraitee');
+        $config["total_rows"] = $this->ModeleCommande->nombreDeCommandesNonTraitees();
+		$config["per_page"] = 10; // nombre d'articles par page
+		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
+		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
+		$config['first_link'] = 'Premier';
+		$config['last_link'] = 'Dernier';
+		$config['next_link'] = 'Suivant';
+		$config['prev_link'] = 'Précédent';
+		$this->pagination->initialize($config);
+        $noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
+		de la méthode, on affecte 0 à $noPage */
+        $DonneesInjectees["lesCommandes"] = $this->ModeleCommande->retournerCommandesLimiteNonTraitee($config["per_page"], $noPage);
+		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
+		$this->load->view('templates/header');
+		$this->load->view('administrateur/afficherCommandeNonTraitee', $DonneesInjectees);
+        $this->load->view('templates/footer');
+
+    }   
+    public function afficherCommandeTraitee()
+    {
+        // les noms des entrées dans $config doivent être respectés
+		$config = array();
+		$config["base_url"] = site_url('administrateur/afficherCommandeTraitee');
+        $config["total_rows"] = $this->ModeleCommande->nombreDeCommandesTraitees();
+		$config["per_page"] = 10; // nombre d'articles par page
+		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
+		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
+		$config['first_link'] = 'Premier';
+		$config['last_link'] = 'Dernier';
+		$config['next_link'] = 'Suivant';
+		$config['prev_link'] = 'Précédent';
+		$this->pagination->initialize($config);
+		$noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
+		de la méthode, on affecte 0 à $noPage */
+        $DonneesInjectees["lesCommandes"] = $this->ModeleCommande->retournerCommandesLimiteTraitee($config["per_page"], $noPage);
+		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
+		$this->load->view('templates/header');
+		$this->load->view('administrateur/afficherCommandeTraitee', $DonneesInjectees);
+        $this->load->view('templates/footer');    
+    }
+
+    public function afficherCommande()
+    {
+        // les noms des entrées dans $config doivent être respectés
+		$config = array();
+		$config["base_url"] = site_url('administrateur/afficherCommande');
+        $config["total_rows"] = $this->ModeleCommande->nombreDeCommandes();
+		$config["per_page"] = 10; // nombre d'articles par page
+		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
+		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
+		$config['first_link'] = 'Premier';
+		$config['last_link'] = 'Dernier';
+		$config['next_link'] = 'Suivant';
+		$config['prev_link'] = 'Précédent';
+		$this->pagination->initialize($config);
+		$noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
+		de la méthode, on affecte 0 à $noPage */
+        $DonneesInjectees["lesCommandes"] = $this->ModeleCommande->retournerCommandesLimite($config["per_page"], $noPage);
+		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
+		$this->load->view('templates/header');
+		$this->load->view('administrateur/afficherCommande', $DonneesInjectees);
+        $this->load->view('templates/footer');
     }
 
     public function afficherBoutique() 
@@ -84,7 +137,7 @@ class Administrateur extends CI_Controller {
 		$config = array();
 		$config["base_url"] = site_url('administrateur/afficherBoutique');
 		$config["total_rows"] = $this->ModeleProduit->nombreDeProduitsAdmin();
-		$config["per_page"] = 3; // nombre d'articles par page
+		$config["per_page"] = 5; // nombre d'articles par page
 		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
 		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
 		$config['first_link'] = 'Premier';
@@ -101,7 +154,98 @@ class Administrateur extends CI_Controller {
 		$this->load->view("administrateur/afficherBoutique", $DonneesInjectees);
 		$this->load->view('templates/footer');
   } // fin listerLesArticlesAvecPagination
+
+  public function afficherClient() 
+	{
+		// les noms des entrées dans $config doivent être respectés
+		$config = array();
+		$config["base_url"] = site_url('administrateur/afficherClient');
+		$config["total_rows"] = $this->ModeleClient->nombreDeClients();
+		$config["per_page"] = 5; // nombre d'articles par page
+		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
+		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
+		$config['first_link'] = 'Premier';
+		$config['last_link'] = 'Dernier';
+		$config['next_link'] = 'Suivant';
+		$config['prev_link'] = 'Précédent';
+		$this->pagination->initialize($config);
+		$noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
+		de la méthode, on affecte 0 à $noPage */
+        $DonneesInjectees["lesClients"] = $this->ModeleClient->retournerClientsLimite($config["per_page"], $noPage);
+		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
+		$this->load->view('templates/header');
+		$this->load->view("administrateur/afficherClient", $DonneesInjectees);
+		$this->load->view('templates/footer');
+  } // fin listerLesArticlesAvecPagination
   
+    public function ajouterUneMarque()
+    {
+        $this->load->helper('form');
+        $DonneesInjectees['lesMarques'] = $this->ModeleMarque->retournerMarque(); 
+        $DonneesInjectees['Erreur']='non';
+        if ($this->input->post('boutonAjouterMarque')) // On test si le formulaire a été posté.
+        {
+            $donneesAInserer = array('NOMMARQUE'=>$this->input->post('txtNomMarque'));
+            $MarqueRetourne=$this->ModeleMarque->retournerUneMarque($this->input->post('txtNomMarque'));
+            if ($MarqueRetourne==null)
+            {
+                $this->ModeleMarque->insererUneMarque($donneesAInserer); // appel du modèle
+                $this->load->view('templates/header');
+                redirect('administrateur/ajouterUneMarque');
+                $this->load->view('templates/footer');
+            }  
+            else
+            {
+                $DonneesInjectees['Erreur']="oui";
+                $this->load->view('templates/header');
+                $this->load->view('administrateur/ajouterUneMarque',$DonneesInjectees);
+                $this->load->view('templates/footer');
+            }  
+        }    
+        else
+        {
+            $this->load->view('templates/header');
+            $this->load->view('administrateur/ajouterUneMarque', $DonneesInjectees);
+            $this->load->view('templates/footer');
+        }
+
+        
+    }
+
+    public function ajouterUneCategorie()
+    {
+        $this->load->helper('form');
+        $DonneesInjectees['lesCategories'] = $this->ModeleCategorie->retournerCategorie(); 
+        $DonneesInjectees['Erreur']='non';
+        if ($this->input->post('boutonAjouterCategorie')) // On test si le formulaire a été posté.
+        {
+            $donneesAInserer = array('LIBELLECATEGORIE'=>$this->input->post('txtNomCategorie'));
+            $CategorieRetourne=$this->ModeleCategorie->retournerUneCategorie($this->input->post('txtNomCategorie'));
+            if ($CategorieRetourne==null)
+            {
+                $this->ModeleCategorie->insererUneCategorie($donneesAInserer); // appel du modèle
+                $this->load->view('templates/header');
+                redirect('administrateur/ajouterUneCategorie');
+                $this->load->view('templates/footer');
+            }  
+            else
+            {
+                $DonneesInjectees['Erreur']="oui";
+                $this->load->view('templates/header');
+                $this->load->view('administrateur/ajouterUneCategorie',$DonneesInjectees);
+                $this->load->view('templates/footer');
+            }  
+        }    
+        else
+        {
+            $this->load->view('templates/header');
+            $this->load->view('administrateur/ajouterUneCategorie', $DonneesInjectees);
+            $this->load->view('templates/footer');
+        }
+
+        
+    }
 
     public function ajouterUnProduit()
     {
@@ -145,6 +289,7 @@ class Administrateur extends CI_Controller {
         $DonneesInjectees['TitreDeLaPage'] = 'Ajouter un Client';
         if ($this->input->post('btnAjouterClient')) // On test si le formulaire a été posté.
         {
+            $DonneesInjectees['unClient'] = array();
             // le bouton 'submit', boutonAjouter est <> de NULL, on a posté quelque chose.
             $donneesAInserer = array(
                 'NOM' => $this->input->post('txtNom'),
@@ -156,14 +301,37 @@ class Administrateur extends CI_Controller {
                 'MOTDEPASSE' => $this->input->post('txtMotDePasse'),
                 'PROFIL' => $this->input->post('txtProfil'),
             ); // cTitre, cTexte, cNomFichierImage : champs de la table tabarticle
-            $this->ModeleClient->insererUnClient($donneesAInserer); // appel du modèle
-            $this->load->helper('url'); // helper chargé pour utilisation de site_url (dans la vue)
-            $this->load->view('templates/header');
-            redirect('administrateur/afficherClient');
-            $this->load->view('templates/footer');
+            $Client = array('EMAIL' => $this->input->post('txtIdentifiant'));
+            $ClientRetourne=$this->ModeleClient->retournerClient($Client); // appel du modèle
+            if (($ClientRetourne)==null)
+            {
+                $this->ModeleClient->insererUnClient($donneesAInserer); // appel du modèle
+                $this->load->helper('url'); // helper chargé pour utilisation de site_url (dans la vue)
+                $this->load->view('templates/header');
+                redirect('administrateur/afficherClient');
+                $this->load->view('templates/footer');
+            }
+            else
+            {
+                $DonneesInjectees['unClient'] = array(
+                    'NOM' => $this->input->post('txtNom'),
+                    'PRENOM' => $this->input->post('txtPrenom'),
+                    'ADRESSE' => $this->input->post('txtAdresse'),
+                    'VILLE' => $this->input->post('txtVille'),
+                    'CODEPOSTAL' => $this->input->post('txtCodePostal'),
+                    'MOTDEPASSE' => $this->input->post('txtMotDePasse'),
+                    'PROFIL' => $this->input->post('txtProfil'),
+                );
+                $this->load->view('templates/header');
+                $this->load->view('administrateur/ajouterUnClient', $DonneesInjectees);
+                $this->load->view('templates/footer');
+                
+            }
+            
         }
         else
         {  
+        $DonneesInjectees['unClient'] = array();
           /* si formulaire non posté = bouton 'submit' à NULL : on est jamais passé par le formulaire -> on envoie le formulaire */
           $this->load->view('templates/header');
           $this->load->view('administrateur/ajouterUnClient', $DonneesInjectees);
@@ -193,7 +361,7 @@ class Administrateur extends CI_Controller {
                 'TAUXTVA' => $this->input->post('dpdnTauxTVA'),
                 'NOMIMAGE' => $this->input->post('txtNomFichierImage'),
                 'QUANTITEENSTOCK' => $this->input->post('txtQuantiteStock'),
-                'DATEAJOUT' => $this->input->post('date'),
+                'DATEAJOUT' =>  $this->input->post('date'),
                 'DISPONIBLE' => $this->input->post('dpdnDisponible'),
                 'NOMARQUE'=>$this->input->post('dpdnNoMarque'),
                 'NOCATEGORIE'=>$this->input->post('dpdnNoCategorie'),
@@ -280,30 +448,6 @@ class Administrateur extends CI_Controller {
         $this->load->view('templates/footer');
     } // voirUnProduit
 
-    public function afficherCommandePagination() //FAIRE LA PAGINATION DES COMMANDES 
-	{
-		// les noms des entrées dans $config doivent être respectés
-		$config = array();
-		$config["base_url"] = site_url('administrateur/afficherCommandePagination');
-		$config["total_rows"] = $this->ModeleProduit->nombreDeCommandesAdmin();
-		$config["per_page"] = 3; // nombre d'articles par page
-		$config["uri_segment"] = 3; /* le n° de la page sera placé sur le segment n°3 de URI,
-		pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
-		$config['first_link'] = 'Premier';
-		$config['last_link'] = 'Dernier';
-		$config['next_link'] = 'Suivant';
-		$config['prev_link'] = 'Précédent';
-		$this->pagination->initialize($config);
-		$noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
-		de la méthode, on affecte 0 à $noPage */
-        $DonneesInjectees["lesProduits"] = $this->ModeleProduit->retournerProduitsLimiteAdmin($config["per_page"], $noPage);
-		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
-		$this->load->view('templates/header');
-		$this->load->view("administrateur/afficherBoutique", $DonneesInjectees);
-		$this->load->view('templates/footer');
-  } // fin listerLesArticlesAvecPagination
-
     public function afficherProfil() // afficher l'accueil
 	{
     if (!is_null($this->session->identifiant)) // s'il y a une session ouverte
@@ -330,7 +474,7 @@ class Administrateur extends CI_Controller {
         $AdministrateurtRetourne = $this->ModeleClient->retournerClient($Administrateur);
         $this->ModeleClient->modifierUnClient($donneesAModifier,$Id); // appel du modèle
         $this->load->view('templates/header');
-        $this->load->view('visiteur/afficherAccueil', $DonneesInjectees);
+        redirect('administrateur/afficherProfil', $DonneesInjectees);
         $this->load->view('templates/footer');
     }
     else
@@ -349,15 +493,7 @@ class Administrateur extends CI_Controller {
     }
     
     
-  } // afficher l'acceuil
-    public function afficherClient()
-    {
-        $DonneesInjectees['lesClients'] = $this->ModeleClient->retournerClients();
-		$DonneesInjectees['TitreDeLaPage'] = 'Client';
-		$this->load->view('templates/header');
-		$this->load->view('administrateur/afficherClient', $DonneesInjectees);
-		$this->load->view('templates/footer');
-    }
+  }
 
     public function seDeconnecter() 
     {

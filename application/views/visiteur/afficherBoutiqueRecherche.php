@@ -13,9 +13,10 @@
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Catégories
                             <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParEquipement/1') ?> ">Equipement</a></li>
-                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParTextile/2') ?> "> Textile</a></li> 
-                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParAccessoire/3') ?> ">Accessoire de frappe </a></li>
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutique') ?> ">Tous</a></li>
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParEquipement') ?> ">Equipement</a></li>
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParTextile') ?> "> Textile</a></li> 
+                                    <li><a href="<?php echo site_url('visiteur/afficherBoutiqueParAccessoire') ?> ">Accessoire de frappe </a></li>
                                 </ul>
                         </div>
                     </div>
@@ -56,14 +57,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                <?php foreach ($lesProduits as $unProduit):
-                       echo  '<tr>  
-                       <td class="col-sm-2"> <img  width="35%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
-                       <td class="col-sm-1">' .(($unProduit['PRIXHT'])*(1+ ($unProduit['TAUXTVA']/100))).'€</td>
-                       <td class="col-sm-1">' .$unProduit['NOMMARQUE'].'</td>
-                       <td class="col-sm-1">' .$unProduit['LIBELLECATEGORIE'].'</td>
-                        </tr>';
-                        endforeach ?>   
+                            <?php if (!($lesProduits ==null)):
+                            foreach ($lesProduits as $unProduit):
+                                echo  '<tr>  
+                                        <td class="col-sm-2"> <img  width="35%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
+                                        <td class="col-sm-1">' .(($unProduit['PRIXHT'])*(1+ ($unProduit['TAUXTVA']/100))).'€</td>
+                                        <td class="col-sm-1">' .$unProduit['NOMMARQUE'].'</td>
+                                        <td class="col-sm-1">' .$unProduit['LIBELLECATEGORIE'].'</td>
+                                    </tr>';
+                            endforeach;
+                        endif; ?>   
                         </tbody>
                     </table>
                 </div>
