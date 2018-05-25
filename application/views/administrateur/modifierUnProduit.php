@@ -33,7 +33,7 @@
                         echo form_dropdown(array('name'=>'dpdnTauxTVA','value'=>$unProduit["TAUXTVA"],'class'=>'form-control','title'=>'Saisir le taux de TVA','required'=>'required'),$optionsTaux).'<BR>';
 
                         echo form_label('Nom du fichier image : ','lblNomFichierImage');
-                        echo form_input(array('value'=>$unProduit["NOMIMAGE"],'pattern'=>'[a-zA-Z0-9.]+$','class'=>'form-control','type'=>'text')).'<BR>';
+                        echo form_input(array('name'=>'txtNomFichierImage','value'=>$unProduit["NOMIMAGE"],'pattern'=>'[a-zA-Z0-9.]+$','class'=>'form-control','type'=>'text')).'<BR>';
                          
                         echo form_label('Quantité en stock : ','lblQuantiteStock');
                         echo form_input(array('class'=>'form-control','type'=>'text','value'=>$unProduit["QUANTITEENSTOCK"],'name'=>'txtQuantiteStock','title'=>'Saisir une quantité', 'required'=>'required')).'<BR>';

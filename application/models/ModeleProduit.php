@@ -123,10 +123,28 @@ class ModeleProduit extends CI_Model
 
     public function meilleurProduit()
     {
-        $sql="SELECT * FROM Produit 
-        WHERE noproduit = (SELECT Max(quantiteCommandee)FROM ligne,produit WHERE produit.noProduit=ligne.noProduit)";
-        $requete = $this->db->query($sql);
-        return $requete->row_array();
+        $sql="SELECT Produit.noProduit as 'NOPRODUIT' ,SUM(QUANTITECOMMANDEE) FROM Ligne,Produit 
+        WHERE produit.noProduit=ligne.noProduit Group By Produit.noProduit";
+        $requete=$this->db->query($sql);
+        $meilleurProduit="";
+        foreach($requete->result_array() as $unProduit):
+            $i=0;
+            if ( $meilleurProduit == "")
+            {
+                $meilleurProduit=$unProduit;
+            }
+            else 
+            {
+                if ($meilleurProduit['SUM(QUANTITECOMMANDEE)'] < $unProduit['SUM(QUANTITECOMMANDEE)'])
+                {
+                    $meilleurProduit=$unProduit;
+                }
+            }
+        endforeach;
+
+        $meilleurProduit=$this->ModeleProduit->retournerProduits($meilleurProduit['NOPRODUIT']);
+
+        return $meilleurProduit;
     }
 
     public function nombreDeProduits() 

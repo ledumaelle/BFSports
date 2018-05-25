@@ -68,7 +68,7 @@
 }        
 </script>
 
-<?php echo '<p>'.anchor('visiteur/afficherBoutique','Retour à la liste des produits').'</p>'; ?>
+<?php echo '<p></br>'.anchor('visiteur/afficherBoutique','Retour à la liste des produits').'</p>'; ?>
         </body>
         
 

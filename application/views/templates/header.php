@@ -33,8 +33,8 @@
                         <li><a href="<?php echo site_url('visiteur/afficherPanier') ?> ">Panier</a></li>
                         <form class="navbar-form navbar-left" action="<?php echo site_url('visiteur/afficherBoutiqueRecherche') ?>" method="GET" accept-charset="UTF-8" name="SearchWords">
                             <div class="form-group">
-                                <input type="keywords" class="form-control" autocomplete="off" placeholder="Recherche" name="search">
-                                <input type="submit" class="btn btn-warning">
+                                <input type="keywords" class="form-control" autocomplete="off" placeholder="RECHERCHER" name="search">
+                                <input type="submit" class="btn btn-warning" value="Rechercher">
                             </div>
                         </form>
                     <?php endif; ?>

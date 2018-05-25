@@ -9,9 +9,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-3">
-                    <h2><?php echo $TitreDeLaPage ?></h2>
-                    <br/>
-                    <?php
+                <?php
                         if ($Erreur=='oui') :
                           ?>
                         <div class="container">
@@ -24,6 +22,10 @@
                             </div>
                         </div>
                     <?php endif;  
+
+                   ?> <h2><?php echo $TitreDeLaPage ?></h2>
+                    <br/><?php
+                    
                         echo form_open('visiteur/afficherProfil');
 
                         echo form_label('Nom ','lblNom'); // creation d'un label devant la zone de saisie
@@ -55,6 +57,7 @@
                 </div>
                 <div class="col-sm-6">
                     <h2> Historique de vos commandes </h2>
+                        </br>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
