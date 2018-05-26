@@ -7,6 +7,19 @@
         <script src="<?php echo js_url('confirmation.js') ?>"></script>
     </head>
     <body>
+    <?php
+                        if ($Erreur=='oui') :
+                          ?>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="alert alert-warning">
+                                            <strong>Erreur !</strong> Veuillez saisir une recherche correcte
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
         <div class="container-fluid">
             <div class="row">
                     <div class="col-sm-1">

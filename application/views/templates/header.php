@@ -23,20 +23,29 @@
                         <li><a href="<?php echo site_url('administrateur/afficherCommande') ?>">Commande</a></li>
                         <form class="navbar-form navbar-left" action="<?php echo site_url('administrateur/afficherBoutiqueRecherche') ?>" method="GET" accept-charset="UTF-8" name="SearchWords">
                             <div class="form-group">
-                                <input type="keywords" class="form-control" autocomplete="off" placeholder="Rechercher un produit" name="search">
-                                <input type="submit" class="btn btn-warning">
+                                <input type="keywords" class="form-control" autocomplete="off" placeholder="RECHERCHER UN PRODUIT" name="search">
+                                <input type="submit" class="btn btn-warning" value="Rechercher">
                             </div>
                         </form>
                     <?php else : ?>    
                         <li class="active"><a href=" <?php echo site_url('visiteur/afficherAccueil') ?> "> Accueil</a></li> 
                         <li><a href=" <?php echo site_url('visiteur/afficherBoutique') ?>">Boutique</a></li>
                         <li><a href="<?php echo site_url('visiteur/afficherPanier') ?> ">Panier</a></li>
-                        <form class="navbar-form navbar-left" action="<?php echo site_url('visiteur/afficherBoutiqueRecherche') ?>" method="GET" accept-charset="UTF-8" name="SearchWords">
+                        
+
+                        <form class="navbar-form navbar-left" action="<?php echo site_url('visiteur/recherche') ?>" method="post" accept-charset="UTF-8" name="SearchWords">
                             <div class="form-group">
-                                <input type="keywords" class="form-control" autocomplete="off" placeholder="RECHERCHER" name="search">
-                                <input type="submit" class="btn btn-warning" value="Rechercher">
+                                <input type="text" class="form-control" autocomplete="off" placeholder="RECHERCHER" name="search"/>
+                                <input type="submit" class="btn btn-warning" value="Rechercher" />
                             </div>
                         </form>
+
+                        <!-- <form class="navbar-form navbar-left" action="<?php if ($this->input->post('btnRechercher')): echo site_url('visiteur/afficherBoutiqueRecherche/'.$_POST["txtRecherche"]) ; endif; ?>" method="post" accept-charset="UTF-8" name="SearchWords">
+                            <div class="form-group">
+                                <input type="text" class="form-control" autocomplete="off" placeholder="RECHERCHER" name="txtRecherche" >
+                                <input type="submit" class="btn btn-warning" value="Rechercher" name="btnRechercher">
+                            </div>
+                        </form> -->
                     <?php endif; ?>
                 </ul>
 

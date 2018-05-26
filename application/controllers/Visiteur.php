@@ -43,8 +43,16 @@ class Visiteur extends CI_Controller
     
   } // afficher l'accueil
 
-  public function afficherBoutique() 
+  public function afficherBoutique($Erreur=NULL) 
 	{
+    if (!($Erreur===null))
+        {
+          $DonneesInjectees['Erreur']='oui';
+        }
+      else
+        {
+          $DonneesInjectees['Erreur']='non';
+        }
 		// les noms des entrées dans $config doivent être respectés
 		$config = array();
 		$config["base_url"] = site_url('visiteur/afficherBoutique');
@@ -56,10 +64,10 @@ class Visiteur extends CI_Controller
 		$config['last_link'] = 'Dernier';
 		$config['next_link'] = 'Suivant';
 		$config['prev_link'] = 'Précédent';
-		$this->pagination->initialize($config);
+    $this->pagination->initialize($config);
     $noPage = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 		/* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
-		de la méthode, on affecte 0 à $noPage */
+    de la méthode, on affecte 0 à $noPage */
     $DonneesInjectees["lesProduits"] = $this->ModeleProduit->retournerProduitsLimite($config["per_page"], $noPage);
 		$DonneesInjectees["liensPagination"] = $this->pagination->create_links();
 		$this->load->view('templates/header');
@@ -67,14 +75,55 @@ class Visiteur extends CI_Controller
 		$this->load->view('templates/footer');
   } 
   
-  public function afficherBoutiqueRecherche($Recherche=NULL) // afficher la boutique par rapport à la recherche
+  /*public function afficherBoutiqueRecherche($Recherche=NULL) // afficher la boutique par rapport à la recherche
 	{
     $Recherche=$_GET['search'];
-    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsRecherche($Recherche);
-		$DonneesInjectees['TitreDeLaPage'] = 'Résultat de votre recherche';
+    $DonneesInjectees['lesProduits'] = $this->ModeleProduit->retournerProduitsLimiteRecherche($Recherche);
 		$this->load->view('templates/header');
 		$this->load->view('visiteur/afficherBoutiqueRecherche', $DonneesInjectees);
 		$this->load->view('templates/footer'); 
+  }
+  */
+
+  public function recherche()
+  {
+    $recherche=$this->input->post('search');
+    redirect('visiteur/afficherBoutiqueRecherche/'.$recherche);
+  }
+
+  public function afficherBoutiqueRecherche($Recherche=NULL)
+  { 
+    if (!($Recherche==null) && !($Recherche==""))
+    {
+      // les noms des entrées dans $config doivent être respectés
+      $config = array();
+      $config["base_url"] = site_url('visiteur/afficherBoutiqueRecherche/'.$Recherche);
+      $config["total_rows"] = $this->ModeleProduit->nombreDeProduitsRecherche($Recherche);
+      $config["per_page"] = 5; // nombre d'articles par page
+      $config["uri_segment"] = 4; /* le n° de la page sera placé sur le segment n°3 de URI,
+      pour la page 4 on aura : visiteur/listerLesArticlesAvecPagination/4   */
+      $config['first_link'] = 'Premier';
+      $config['last_link'] = 'Dernier';
+      $config['next_link'] = 'Suivant';
+      $config['prev_link'] = 'Précédent';
+      $this->pagination->initialize($config);
+      $noPage = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+      /* on récupère le n° de la page - segment 3 - si ce segment est vide, cas du premier appel
+      de la méthode, on affecte 0 à $noPage */
+      $DonneesInjectees["lesProduits"] = $this->ModeleProduit->retournerProduitsLimiteRecherche($config["per_page"], $noPage,$Recherche);
+      $DonneesInjectees["liensPagination"] = $this->pagination->create_links();
+      $this->load->view('templates/header');
+      $this->load->view("visiteur/afficherBoutiqueRecherche", $DonneesInjectees);
+      $this->load->view('templates/footer');
+    }
+
+    else
+    {
+      $Erreur="oui";
+      redirect("visiteur/afficherBoutique/".$Erreur="oui");
+    }
+      
+    
   }
 
   public function afficherBoutiqueParEquipement()

@@ -59,6 +59,7 @@
                             <tbody>
                             <?php if (!($lesProduits ==null)):
                             foreach ($lesProduits as $unProduit):
+                                    $unProduit = json_decode(json_encode($unProduit), True);
                                 echo  '<tr>  
                                         <td class="col-sm-2"> <img  width="35%" src="'. img_url($unProduit['NOMIMAGE']) .'"/> <h5>'.anchor('visiteur/voirUnProduit/'.$unProduit['NOPRODUIT'],$unProduit['LIBELLE']).'</h5></td>
                                         <td class="col-sm-1">' .(($unProduit['PRIXHT'])*(1+ ($unProduit['TAUXTVA']/100))).'€</td>
@@ -77,6 +78,7 @@
         </div>
     </div>
         <p>Pour avoir afficher le détail d'un produit, cliquer sur son titre</p> 
+        <p><?php echo $liensPagination; ?></p>
 </body>
 </html>
 
